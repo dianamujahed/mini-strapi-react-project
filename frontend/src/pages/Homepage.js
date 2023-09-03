@@ -1,4 +1,4 @@
-import {React, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import config  from '../config.json';
@@ -11,16 +11,24 @@ export default function Homepage() {
   useEffect(() => {
     const url = `${config.apiUrl}/products?populate=picture`;
     const fetchProducts = async () => {
-      const  data  = await axios.get(url);
-      setProducts(data.data.data);
+      try {
+        const  response  = await axios.get(url);
+        setProducts(response.data.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
     };
     fetchProducts();
   },[]);
 
   const handleDelete = async (id) => {
-    const url = `${config.apiUrl}/products/${id}`;
-    await axios.delete(url);
-    setProducts(products.filter(product => product.id !== id));
+    try {
+      const url = `${config.apiUrl}/products/${id}`;
+      await axios.delete(url);
+      setProducts(products.filter(product => product.id !== id));
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
   }
 
   return (
